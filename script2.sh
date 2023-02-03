@@ -16,7 +16,7 @@ message_erreur2=""
 nb_options3=0
 nb_fichier=0
 
-liste_options=":f:d:tpwmhFGSAPQO--tab--abr--avl"  #On stock toute les options qui sont possiblement présente dans une variable
+liste_options=":f:d:tpwmhFGSAPQO--tab--abr--avl-hepl"  #On stock toute les options qui sont possiblement présente dans une variable
 
 # Boucle pour lire les options de la ligne de commande
 while getopts "$liste_options"  opt; do
@@ -79,7 +79,16 @@ while getopts "$liste_options"  opt; do
     --avl)
       OPTIONS_TRI="$OPTIONS_TRI  --abl"
       ;;
-
+    -help)
+      echo "Pour executer le script veullez utiliser la commande suivante: bash <nom du script>. Il existe différentes
+      options: -t,-p,-w,-m,-h  il faudra au minimu executer le script avec une de ces  options! L'option -f est obligatoire
+      ce dernière permettra de selectionner un fichier csv qui sera un fichier contenant les informations d'entrée a traités.
+      Vous pouvez également choisir votre option de tri: --tab, --abr,--avl, notons que ces optsino sont exlcusive entre elles.
+      Finalement vous pouvez également utiliser les options: -F,-G,-S,-A,-P,-Q, Ces options permmetent der selectionné
+      une position géographique précise parmi les données a traiter. Pour assurer une bonne execution du programme
+      vous faudra rensigner l'option -f en première."
+    ;;
+      
     \?)
       echo "Option invalide : -$OPTARG" >&2  #Si l'option est invalide en revoie un message d'erreur et on arrète le programme
       exit 1
@@ -130,7 +139,7 @@ for option in --tab --abr --avl; do
 done
 
 if [[ $nb_options3 -eq 0 ]]; then
-  OPTIONS_TRI="$OPTIONS_TRI --avl"
+  OPTIONS_TRI="$OPTIONS_TRI --tab"
 fi
 
 # Vérifie si le fichier main existe, sinon le compile
@@ -141,11 +150,11 @@ fi
 # Appelle l'executable main avec les options et le fichier
                             
 while [ -n "$FICHIER_S" ]; do # Boucle jusqu'à ce que la variable FICHIER_S soit vide
-                       
+          
   fichier_tempo="${FICHIER_S%% *}"  #Récupération du premier nom de fichier
   FICHIER_S="${FICHIER_S#* }"  # Mise à jour de la variable FICHIER_S en enlevant le premier nom de fichier
   
-  ./main "$fichier_tempo" "$OPTION_GEO" "$OPTION_TRI"
+  ./main "$fichier_tempo"
   # Vérification si la variable FICHIER_S a été mise à jour
   if [ "$FICHIER_S" = "${FICHIER_S#* }" ]; then
     # Si la variable FICHIER_S n'a pas été mise à jour, elle est vide
@@ -154,4 +163,4 @@ while [ -n "$FICHIER_S" ]; do # Boucle jusqu'à ce que la variable FICHIER_S soi
   fi
 done
 
-echo Les options finale $OPTIONS $FICHIER_S $OPTION_GEO $OPTIONS_TRI
+bash gnu.sh
